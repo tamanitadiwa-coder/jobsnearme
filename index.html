@@ -16,6 +16,18 @@ body {
   align-items: center;
   height: 100vh;
   text-align: center;
+
+  /* Fade system */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.loaded {
+  opacity: 1;
+}
+
+body.fade-out {
+  opacity: 0;
 }
 
 .container {
@@ -61,8 +73,19 @@ button:hover {
 </div>
 
 <script>
+/* Fade in on page load */
+window.onload = function () {
+  document.body.classList.add("loaded");
+};
+
+/* Fade out then go to next page */
 function start() {
-  window.location.href = "theme.html";
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.location.href = "theme.html";
+  }, 400);
 }
 </script>
 
