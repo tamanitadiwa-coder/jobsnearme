@@ -16,25 +16,6 @@ body {
   align-items: center;
   height: 100vh;
   text-align: center;
-
-  /* Fade system */
-  opacity: 0;
-  transition: opacity 0.4s ease, background 0.3s ease, color 0.3s ease;
-}
-
-body.loaded { opacity: 1; }
-body.fade-out { opacity: 0; }
-
-/* DARK THEME */
-body.dark {
-  background: #000;
-  color: #fff;
-}
-
-/* 🔥 NEW: White buttons in dark mode */
-body.dark button {
-  background: #fff;
-  color: #000;
 }
 
 .container {
@@ -80,25 +61,8 @@ button:hover {
 </div>
 
 <script>
-/* APPLY SAVED THEME */
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-}
-
-/* Fade in on page load */
-window.onload = function () {
-  document.body.classList.add("loaded");
-};
-
-/* Fade out then go to next page */
 function start() {
-  document.body.classList.remove("loaded");
-  document.body.classList.add("fade-out");
-
-  setTimeout(function () {
-    window.location.href = "theme.html";
-  }, 400);
+  window.location.href = "theme.html";
 }
 </script>
 
