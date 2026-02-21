@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Choose Theme — StoresNearm</title>
+<title>Stores — StoresNearm</title>
 
 <style>
 body {
@@ -11,71 +11,80 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #ffffff;
   color: #111;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
 
-  /* Fade system */
   opacity: 0;
-  transition: opacity 0.4s ease, background 0.3s ease, color 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 body.loaded { opacity: 1; }
 body.fade-out { opacity: 0; }
 
-/* DARK THEME */
-body.dark {
-  background: #000;
-  color: #fff;
-}
-
-/* Container */
-.container {
-  width: 90%;
-  max-width: 420px;
-}
-
 /* Back button */
 .back {
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 20px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
-  color: inherit;
+  color: #000;
+  z-index: 10;
+}
+
+/* Page container */
+.container {
+  padding: 70px 20px 30px;
+  max-width: 520px;
+  margin: auto;
 }
 
 /* Title */
 h1 {
-  font-size: 26px;
-  margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
-/* Theme options */
-.option {
-  width: 100%;
-  padding: 18px;
-  margin-bottom: 15px;
-  border-radius: 14px;
+/* Subtitle */
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+/* Store cards */
+.card {
   border: 1px solid #ddd;
-  font-size: 16px;
-  cursor: pointer;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 15px;
 }
 
-/* Preview styles */
-.light {
-  background: #fff;
-  color: #000;
+/* Store name */
+.store-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
-.dark {
+/* Store location */
+.store-location {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* View button */
+.view-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
   background: #000;
   color: #fff;
-  border: none;
+  font-size: 15px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -85,27 +94,43 @@ h1 {
 <button class="back" onclick="goBack()">← Back</button>
 
 <div class="container">
-  <h1>Choose Theme</h1>
 
-  <div class="option light" onclick="setTheme('light')">
-    Light Theme
+  <h1>Stores Near You</h1>
+  <p class="subtitle" id="context"></p>
+
+  <!-- Example Store Cards -->
+
+  <div class="card">
+    <div class="store-name">Example Restaurant</div>
+    <div class="store-location">Local Area</div>
+    <button class="view-btn" onclick="viewStore()">View Store</button>
   </div>
 
-  <div class="option dark" onclick="setTheme('dark')">
-    Dark Theme
+  <div class="card">
+    <div class="store-name">Example Supermarket</div>
+    <div class="store-location">Local Area</div>
+    <button class="view-btn" onclick="viewStore()">View Store</button>
   </div>
+
+  <div class="card">
+    <div class="store-name">Example Clothing Store</div>
+    <div class="store-location">Local Area</div>
+    <button class="view-btn" onclick="viewStore()">View Store</button>
+  </div>
+
 </div>
 
 <script>
-/* APPLY SAVED THEME IF EXISTS */
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-}
-
-/* Fade in on load */
+/* Fade in */
 window.onload = function () {
   document.body.classList.add("loaded");
+
+  // Show selected filters
+  const category = localStorage.getItem("category") || "Stores";
+  const location = localStorage.getItem("location") || "Selected area";
+
+  document.getElementById("context").textContent =
+    category + " • " + location;
 };
 
 /* Back button */
@@ -118,22 +143,13 @@ function goBack() {
   }, 400);
 }
 
-/* Theme selection */
-function setTheme(mode) {
-  localStorage.setItem("theme", mode);
-
-  /* Apply immediately */
-  if (mode === "dark") {
-    document.body.classList.add("dark");
-  } else {
-    document.body.classList.remove("dark");
-  }
-
+/* Open store page */
+function viewStore() {
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.location.href = "category.html";
+    window.location.href = "store.html";
   }, 400);
 }
 </script>
