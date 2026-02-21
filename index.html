@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StoresNearm</title>
+<title>Choose Theme — StoresNearm</title>
 
 <style>
 body {
@@ -16,53 +16,107 @@ body {
   align-items: center;
   height: 100vh;
   text-align: center;
+
+  /* Fade system */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.loaded {
+  opacity: 1;
+}
+
+body.fade-out {
+  opacity: 0;
 }
 
 .container {
-  max-width: 400px;
-  padding: 20px;
+  width: 90%;
+  max-width: 420px;
 }
 
-h1 {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 40px;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  font-size: 16px;
+/* Back button */
+.back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
   border: none;
-  background: #000;
-  color: #fff;
-  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000;
+}
+
+/* Title */
+h1 {
+  font-size: 26px;
+  margin-bottom: 30px;
+}
+
+/* Theme options */
+.option {
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  font-size: 16px;
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+/* Preview styles */
+.light {
+  background: #fff;
+  color: #000;
+}
+
+.dark {
+  background: #000;
+  color: #fff;
+  border: none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>StoresNearm</h1>
-  <p>Find stores near you. Contact them directly. Apply easily.</p>
+<button class="back" onclick="goBack()">← Back</button>
 
-  <button onclick="start()">Get Started</button>
+<div class="container">
+  <h1>Choose Theme</h1>
+
+  <div class="option light" onclick="setTheme('light')">
+    Light Theme
+  </div>
+
 </div>
 
 <script>
-function start() {
-  window.location.href = "theme.html";
+/* Fade in on load */
+window.onload = function () {
+  document.body.classList.add("loaded");
+};
+
+/* Back button */
+function goBack() {
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.history.back();
+  }, 400);
+}
+
+/* Theme selection */
+function setTheme(mode) {
+  localStorage.setItem("theme", mode);
+
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.location.href = "category.html";
+  }, 400);
 }
 </script>
 
