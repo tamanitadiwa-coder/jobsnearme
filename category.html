@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stores — StoresNearm</title>
+<title>Select Category — StoresNearm</title>
 
 <style>
 body {
@@ -11,6 +11,11 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #ffffff;
   color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
 
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -19,9 +24,16 @@ body {
 body.loaded { opacity: 1; }
 body.fade-out { opacity: 0; }
 
+.container {
+  width: 90%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
 /* Back button */
 .back {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 20px;
   background: none;
@@ -29,62 +41,25 @@ body.fade-out { opacity: 0; }
   font-size: 16px;
   cursor: pointer;
   color: #000;
-  z-index: 10;
-}
-
-/* Page container */
-.container {
-  padding: 70px 20px 30px;
-  max-width: 520px;
-  margin: auto;
 }
 
 /* Title */
 h1 {
-  text-align: center;
-  margin-bottom: 8px;
+  font-size: 26px;
+  margin-bottom: 20px;
 }
 
-/* Subtitle */
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 25px;
-  font-size: 14px;
-}
-
-/* Store cards */
-.card {
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 15px;
-}
-
-/* Store name */
-.store-name {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-/* Store location */
-.store-location {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-/* View button */
-.view-btn {
+/* Category buttons */
+.option {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 10px;
+  border-radius: 14px;
   border: none;
+  font-size: 16px;
+  cursor: pointer;
   background: #000;
   color: #fff;
-  font-size: 15px;
-  cursor: pointer;
 }
 </style>
 </head>
@@ -94,29 +69,32 @@ h1 {
 <button class="back" onclick="goBack()">← Back</button>
 
 <div class="container">
+  <h1>Select Category</h1>
 
-  <h1>Stores Near You</h1>
-  <p class="subtitle" id="context"></p>
+  <button class="option" onclick="selectCategory('restaurants')">Restaurants</button>
+  <button class="option" onclick="selectCategory('cafes')">Cafés & Coffee Shops</button>
 
-  <!-- Example Store Cards -->
+  <!-- NEW CATEGORY ADDED BELOW CAFÉS -->
+  <button class="option" onclick="selectCategory('weedstores')">Weed Stores</button>
 
-  <div class="card">
-    <div class="store-name">Example Restaurant</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
-
-  <div class="card">
-    <div class="store-name">Example Supermarket</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
-
-  <div class="card">
-    <div class="store-name">Example Clothing Store</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
+  <button class="option" onclick="selectCategory('fastfood')">Fast Food</button>
+  <button class="option" onclick="selectCategory('supermarkets')">Supermarkets</button>
+  <button class="option" onclick="selectCategory('clothing')">Clothing & Fashion</button>
+  <button class="option" onclick="selectCategory('pharmacies')">Pharmacies</button>
+  <button class="option" onclick="selectCategory('electronics')">Electronics Stores</button>
+  <button class="option" onclick="selectCategory('furniture')">Furniture & Home Stores</button>
+  <button class="option" onclick="selectCategory('hardware')">Hardware & Building Stores</button>
+  <button class="option" onclick="selectCategory('beauty')">Beauty & Cosmetics</button>
+  <button class="option" onclick="selectCategory('salons')">Hair & Nail Salons</button>
+  <button class="option" onclick="selectCategory('gyms')">Gyms & Fitness Centers</button>
+  <button class="option" onclick="selectCategory('hotels')">Hotels & Accommodation</button>
+  <button class="option" onclick="selectCategory('travel')">Travel & Tourism</button>
+  <button class="option" onclick="selectCategory('banks')">Banks & Financial Services</button>
+  <button class="option" onclick="selectCategory('insurance')">Insurance Offices</button>
+  <button class="option" onclick="selectCategory('education')">Schools & Colleges</button>
+  <button class="option" onclick="selectCategory('healthcare')">Hospitals & Clinics</button>
+  <button class="option" onclick="selectCategory('services')">Local Services</button>
+  <button class="option" onclick="selectCategory('retail')">General Retail Stores</button>
 
 </div>
 
@@ -124,32 +102,31 @@ h1 {
 /* Fade in */
 window.onload = function () {
   document.body.classList.add("loaded");
-
-  // Show selected filters
-  const category = localStorage.getItem("category") || "Stores";
-  const location = localStorage.getItem("location") || "Selected area";
-
-  document.getElementById("context").textContent =
-    category + " • " + location;
 };
 
-/* Back button */
+/* Back button — NOW ALWAYS WORKS */
 function goBack() {
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.history.back();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "theme.html"; // fallback
+    }
   }, 400);
 }
 
-/* Open store page */
-function viewStore() {
+/* Save category + go next */
+function selectCategory(category) {
+  localStorage.setItem("category", category);
+
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.location.href = "store.html";
+    window.location.href = "location.html";
   }, 400);
 }
 </script>
