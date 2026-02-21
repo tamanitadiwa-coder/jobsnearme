@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stores — StoresNearm</title>
+<title>Choose Theme — StoresNearm</title>
 
 <style>
 body {
@@ -11,17 +11,33 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #ffffff;
   color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
 
+  /* Fade system */
   opacity: 0;
   transition: opacity 0.4s ease;
 }
 
-body.loaded { opacity: 1; }
-body.fade-out { opacity: 0; }
+body.loaded {
+  opacity: 1;
+}
+
+body.fade-out {
+  opacity: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 420px;
+}
 
 /* Back button */
 .back {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 20px;
   background: none;
@@ -29,62 +45,35 @@ body.fade-out { opacity: 0; }
   font-size: 16px;
   cursor: pointer;
   color: #000;
-  z-index: 10;
-}
-
-/* Page container */
-.container {
-  padding: 70px 20px 30px;
-  max-width: 520px;
-  margin: auto;
 }
 
 /* Title */
 h1 {
-  text-align: center;
-  margin-bottom: 8px;
+  font-size: 26px;
+  margin-bottom: 30px;
 }
 
-/* Subtitle */
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 25px;
-  font-size: 14px;
-}
-
-/* Store cards */
-.card {
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 15px;
-}
-
-/* Store name */
-.store-name {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-/* Store location */
-.store-location {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-/* View button */
-.view-btn {
+/* Theme options */
+.option {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Preview styles */
+.light {
+  background: #fff;
+  color: #000;
+}
+
+.dark {
   background: #000;
   color: #fff;
-  font-size: 15px;
-  cursor: pointer;
+  border: none;
 }
 </style>
 </head>
@@ -94,43 +83,18 @@ h1 {
 <button class="back" onclick="goBack()">← Back</button>
 
 <div class="container">
+  <h1>Choose Theme</h1>
 
-  <h1>Stores Near You</h1>
-  <p class="subtitle" id="context"></p>
-
-  <!-- Example Store Cards -->
-
-  <div class="card">
-    <div class="store-name">Example Restaurant</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
-
-  <div class="card">
-    <div class="store-name">Example Supermarket</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
-
-  <div class="card">
-    <div class="store-name">Example Clothing Store</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
+  <div class="option light" onclick="setTheme('light')">
+    Light Theme
   </div>
 
 </div>
 
 <script>
-/* Fade in */
+/* Fade in on load */
 window.onload = function () {
   document.body.classList.add("loaded");
-
-  // Show selected filters
-  const category = localStorage.getItem("category") || "Stores";
-  const location = localStorage.getItem("location") || "Selected area";
-
-  document.getElementById("context").textContent =
-    category + " • " + location;
 };
 
 /* Back button */
@@ -143,13 +107,15 @@ function goBack() {
   }, 400);
 }
 
-/* Open store page */
-function viewStore() {
+/* Theme selection */
+function setTheme(mode) {
+  localStorage.setItem("theme", mode);
+
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.location.href = "store.html";
+    window.location.href = "category.html";
   }, 400);
 }
 </script>
