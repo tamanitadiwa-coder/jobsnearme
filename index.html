@@ -19,15 +19,16 @@ body {
 
   /* Fade system */
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease, background 0.3s ease, color 0.3s ease;
 }
 
-body.loaded {
-  opacity: 1;
-}
+body.loaded { opacity: 1; }
+body.fade-out { opacity: 0; }
 
-body.fade-out {
-  opacity: 0;
+/* DARK THEME */
+body.dark {
+  background: #000;
+  color: #fff;
 }
 
 .container {
@@ -73,6 +74,12 @@ button:hover {
 </div>
 
 <script>
+/* APPLY SAVED THEME */
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  document.body.classList.add("dark");
+}
+
 /* Fade in on page load */
 window.onload = function () {
   document.body.classList.add("loaded");
