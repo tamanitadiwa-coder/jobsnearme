@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stores — StoresNearm</title>
 
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #ffffff;
+  color: #111;
+
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.loaded { opacity: 1; }
+body.fade-out { opacity: 0; }
+
+/* Back button */
+.back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000;
+  z-index: 10;
+}
+
+/* Page container */
+.container {
+  padding: 70px 20px 30px;
+  max-width: 520px;
+  margin: auto;
+}
+
+/* Title */
+h1 {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* Subtitle */
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+/* Store cards */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+/* Store name */
+.store-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* Store location */
+.store-location {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* View button */
+.view-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<button class="back" onclick="goBack()">← Back</button>
+
+<div class="container">
+
+  <h1>Stores Near You</h1>
+  <p class="subtitle" id="context"></p>
+
+  <!-- Example Store Cards -->
+
+  <div class="card">
+    <div class="store-name">Example Restaurant</div>
+    <div class="store-location">Local Area</div>
+    <button class="view-btn" onclick="viewStore()">View Store</button>
+  </div>
+
+  <div class="card">
+    <div class="store-name">Example Supermarket</div>
+    <div class="store-location">Local Area</div>
+    <button class="view-btn" onclick="viewStore()">View Store</button>
+  </div>
+
+  <div class="card">
+    <div class="store-name">Example Clothing Store</div>
+    <div class="store-location">Local Area</div>
+    <button class="view-btn" onclick="viewStore()">View Store</button>
+  </div>
+
+</div>
+
+<script>
+/* Fade in */
+window.onload = function () {
+  document.body.classList.add("loaded");
+
+  // Show selected filters
+  const category = localStorage.getItem("category") || "Stores";
+  const location = localStorage.getItem("location") || "Selected area";
+
+  document.getElementById("context").textContent =
+    category + " • " + location;
+};
+
+/* Back button */
+function goBack() {
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.history.back();
+  }, 400);
+}
+
+/* Open store page */
+function viewStore() {
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.location.href = "store.html";
+  }, 400);
+}
+</script>
+
+</body>
+</html>
