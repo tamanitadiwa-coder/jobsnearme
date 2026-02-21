@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose Theme — StoresNearm</title>
 
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #ffffff;
+  color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+
+  /* Fade system */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.loaded {
+  opacity: 1;
+}
+
+body.fade-out {
+  opacity: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 420px;
+}
+
+/* Back button */
+.back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000;
+}
+
+/* Title */
+h1 {
+  font-size: 26px;
+  margin-bottom: 30px;
+}
+
+/* Theme options */
+.option {
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Preview styles */
+.light {
+  background: #fff;
+  color: #000;
+}
+
+.dark {
+  background: #000;
+  color: #fff;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<button class="back" onclick="goBack()">← Back</button>
+
+<div class="container">
+  <h1>Choose Theme</h1>
+
+  <div class="option light" onclick="setTheme('light')">
+    Light Theme
+  </div>
+
+  <div class="option dark" onclick="setTheme('dark')">
+    Dark Theme
+  </div>
+</div>
+
+<script>
+/* Fade in on load */
+window.onload = function () {
+  document.body.classList.add("loaded");
+};
+
+/* Back button */
+function goBack() {
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.history.back();
+  }, 400);
+}
+
+/* Theme selection */
+function setTheme(mode) {
+  localStorage.setItem("theme", mode);
+
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.location.href = "category.html";
+  }, 400);
+}
+</script>
+
+</body>
+</html>
