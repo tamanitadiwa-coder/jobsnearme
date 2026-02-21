@@ -13,17 +13,11 @@ body {
   color: #111;
 
   opacity: 0;
-  transition: opacity 0.4s ease, background 0.3s ease, color 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 body.loaded { opacity: 1; }
 body.fade-out { opacity: 0; }
-
-/* DARK THEME */
-body.dark {
-  background: #000;
-  color: #fff;
-}
 
 /* Back button */
 .back {
@@ -34,7 +28,7 @@ body.dark {
   border: none;
   font-size: 16px;
   cursor: pointer;
-  color: inherit;
+  color: #000;
   z-index: 10;
 }
 
@@ -127,12 +121,6 @@ h1 {
 </div>
 
 <script>
-/* APPLY SAVED THEME */
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-}
-
 /* Fade in */
 window.onload = function () {
   document.body.classList.add("loaded");
