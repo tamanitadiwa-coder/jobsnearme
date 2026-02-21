@@ -1,1 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Location — StoresNearm</title>
 
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #ffffff;
+  color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.loaded { opacity: 1; }
+body.fade-out { opacity: 0; }
+
+.container {
+  width: 90%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* Back button */
+.back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000;
+}
+
+/* Title */
+h1 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+/* Section label */
+.section {
+  text-align: left;
+  font-weight: 600;
+  margin: 18px 0 8px;
+}
+
+/* Location buttons */
+.option {
+  width: 100%;
+  padding: 16px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<button class="back" onclick="goBack()">← Back</button>
+
+<div class="container">
+  <h1>Select Location</h1>
+
+  <!-- WESTERN CAPE FIRST -->
+  <div class="section">Western Cape</div>
+
+  <button class="option" onclick="setLocation('Cape Town CBD')">Cape Town CBD</button>
+  <button class="option" onclick="setLocation('Claremont')">Claremont</button>
+  <button class="option" onclick="setLocation('Rondebosch')">Rondebosch</button>
+  <button class="option" onclick="setLocation('Observatory')">Observatory</button>
+  <button class="option" onclick="setLocation('Newlands')">Newlands</button>
+  <button class="option" onclick="setLocation('Kenilworth')">Kenilworth</button>
+  <button class="option" onclick="setLocation('Wynberg')">Wynberg</button>
+  <button class="option" onclick="setLocation('Mitchells Plain')">Mitchells Plain</button>
+  <button class="option" onclick="setLocation('Khayelitsha')">Khayelitsha</button>
+  <button class="option" onclick="setLocation('Bellville')">Bellville</button>
+  <button class="option" onclick="setLocation('Parow')">Parow</button>
+  <button class="option" onclick="setLocation('Durbanville')">Durbanville</button>
+  <button class="option" onclick="setLocation('Table View')">Table View</button>
+  <button class="option" onclick="setLocation('Blouberg')">Blouberg</button>
+  <button class="option" onclick="setLocation('Sea Point')">Sea Point</button>
+  <button class="option" onclick="setLocation('Green Point')">Green Point</button>
+  <button class="option" onclick="setLocation('Hout Bay')">Hout Bay</button>
+  <button class="option" onclick="setLocation('Somerset West')">Somerset West</button>
+  <button class="option" onclick="setLocation('Strand')">Strand</button>
+  <button class="option" onclick="setLocation('Stellenbosch')">Stellenbosch</button>
+
+  <!-- OTHER MAJOR CITIES -->
+  <div class="section">Other Major Cities</div>
+
+  <button class="option" onclick="setLocation('Johannesburg')">Johannesburg</button>
+  <button class="option" onclick="setLocation('Pretoria')">Pretoria</button>
+  <button class="option" onclick="setLocation('Durban')">Durban</button>
+  <button class="option" onclick="setLocation('Port Elizabeth')">Gqeberha (Port Elizabeth)</button>
+  <button class="option" onclick="setLocation('Bloemfontein')">Bloemfontein</button>
+  <button class="option" onclick="setLocation('Polokwane')">Polokwane</button>
+  <button class="option" onclick="setLocation('Nelspruit')">Nelspruit (Mbombela)</button>
+  <button class="option" onclick="setLocation('Kimberley')">Kimberley</button>
+  <button class="option" onclick="setLocation('East London')">East London</button>
+
+</div>
+
+<script>
+/* Fade in */
+window.onload = function () {
+  document.body.classList.add("loaded");
+};
+
+/* Back button */
+function goBack() {
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.history.back();
+  }, 400);
+}
+
+/* Save location + go next */
+function setLocation(city) {
+  localStorage.setItem("location", city);
+
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.location.href = "listings.html";
+  }, 400);
+}
+</script>
+
+</body>
+</html>
