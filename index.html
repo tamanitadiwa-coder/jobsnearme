@@ -50,14 +50,22 @@ body.fade-out {
 /* Title */
 h1 {
   font-size: 26px;
+  margin-bottom: 15px;
+}
+
+/* Description text */
+.description {
+  font-size: 15px;
+  color: #555;
   margin-bottom: 30px;
+  line-height: 1.4;
 }
 
 /* Theme options */
 .option {
-  width: 100%;
-  padding: 18px;
-  margin-bottom: 15px;
+  width: 70%;
+  padding: 14px;
+  margin: 0 auto 15px auto;
   border-radius: 14px;
   border: 1px solid #ddd;
   font-size: 16px;
@@ -83,8 +91,12 @@ h1 {
 <div class="container">
   <h1>Welcome to StoresNearm</h1>
 
+  <div class="description">
+    All stores near you, grouped in one place — making it easy and fast to find what you need.
+  </div>
+
   <div class="option light" onclick="setTheme('light')">
-    Continue with Light Theme
+    Continue
   </div>
 
 </div>
