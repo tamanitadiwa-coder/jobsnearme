@@ -49,17 +49,17 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* Category buttons */
+/* Category buttons — matched to first page style */
 .option {
-  width: 100%;
-  padding: 18px;
-  margin-bottom: 10px;
+  width: 70%;
+  padding: 14px;
+  margin: 0 auto 12px auto;
   border-radius: 14px;
-  border: none;
+  border: 1px solid #ddd;
   font-size: 16px;
   cursor: pointer;
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
 }
 </style>
 </head>
@@ -104,13 +104,17 @@ window.onload = function () {
   document.body.classList.add("loaded");
 };
 
-/* Back button */
+/* Back button — always works */
 function goBack() {
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.history.back();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "index.html";
+    }
   }, 400);
 }
 
