@@ -97,13 +97,17 @@ window.onload = function () {
   document.body.classList.add("loaded");
 };
 
-/* Back button */
+/* Back button — now always works */
 function goBack() {
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.history.back();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "index.html";
+    }
   }, 400);
 }
 
