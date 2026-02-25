@@ -123,17 +123,29 @@ window.onload = function () {
   document.body.classList.add("loaded");
 };
 
+/* FIX: Prevent white screen when navigating back */
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    document.body.classList.remove("fade-out");
+    document.body.classList.add("loaded");
+  }
+});
+
 /* Back button */
 function goBack() {
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.history.back();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "index.html";
+    }
   }, 400);
 }
 
-/* Save location + go next */
+/* Save location + go next (NOW GOES TO CATEGORY) */
 function setLocation(city) {
   localStorage.setItem("location", city);
 
@@ -141,7 +153,7 @@ function setLocation(city) {
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.location.href = "listings.html";
+    window.location.href = "category.html";
   }, 400);
 }
 </script>
