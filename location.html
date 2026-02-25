@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stores — StoresNearm</title>
+<title>Select Location — StoresNearm</title>
 
 <style>
 body {
@@ -11,6 +11,11 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #ffffff;
   color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
 
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -19,9 +24,16 @@ body {
 body.loaded { opacity: 1; }
 body.fade-out { opacity: 0; }
 
+.container {
+  width: 90%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
 /* Back button */
 .back {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 20px;
   background: none;
@@ -29,62 +41,32 @@ body.fade-out { opacity: 0; }
   font-size: 16px;
   cursor: pointer;
   color: #000;
-  z-index: 10;
-}
-
-/* Page container */
-.container {
-  padding: 70px 20px 30px;
-  max-width: 520px;
-  margin: auto;
 }
 
 /* Title */
 h1 {
-  text-align: center;
-  margin-bottom: 8px;
+  font-size: 26px;
+  margin-bottom: 20px;
 }
 
-/* Subtitle */
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 25px;
-  font-size: 14px;
-}
-
-/* Store cards */
-.card {
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 15px;
-}
-
-/* Store name */
-.store-name {
-  font-size: 18px;
+/* Section label */
+.section {
+  text-align: left;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin: 18px 0 8px;
 }
 
-/* Store location */
-.store-location {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-/* View button */
-.view-btn {
+/* Location buttons */
+.option {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 8px;
+  border-radius: 14px;
   border: none;
-  background: #000;
-  color: #fff;
   font-size: 15px;
   cursor: pointer;
+  background: #000;
+  color: #fff;
 }
 </style>
 </head>
@@ -94,29 +76,44 @@ h1 {
 <button class="back" onclick="goBack()">← Back</button>
 
 <div class="container">
+  <h1>Select Location</h1>
 
-  <h1>Stores Near You</h1>
-  <p class="subtitle" id="context"></p>
+  <!-- WESTERN CAPE FIRST -->
+  <div class="section">Western Cape</div>
 
-  <!-- Example Store Cards -->
+  <button class="option" onclick="setLocation('Cape Town CBD')">Cape Town CBD</button>
+  <button class="option" onclick="setLocation('Claremont')">Claremont</button>
+  <button class="option" onclick="setLocation('Rondebosch')">Rondebosch</button>
+  <button class="option" onclick="setLocation('Observatory')">Observatory</button>
+  <button class="option" onclick="setLocation('Newlands')">Newlands</button>
+  <button class="option" onclick="setLocation('Kenilworth')">Kenilworth</button>
+  <button class="option" onclick="setLocation('Wynberg')">Wynberg</button>
+  <button class="option" onclick="setLocation('Mitchells Plain')">Mitchells Plain</button>
+  <button class="option" onclick="setLocation('Khayelitsha')">Khayelitsha</button>
+  <button class="option" onclick="setLocation('Bellville')">Bellville</button>
+  <button class="option" onclick="setLocation('Parow')">Parow</button>
+  <button class="option" onclick="setLocation('Durbanville')">Durbanville</button>
+  <button class="option" onclick="setLocation('Table View')">Table View</button>
+  <button class="option" onclick="setLocation('Blouberg')">Blouberg</button>
+  <button class="option" onclick="setLocation('Sea Point')">Sea Point</button>
+  <button class="option" onclick="setLocation('Green Point')">Green Point</button>
+  <button class="option" onclick="setLocation('Hout Bay')">Hout Bay</button>
+  <button class="option" onclick="setLocation('Somerset West')">Somerset West</button>
+  <button class="option" onclick="setLocation('Strand')">Strand</button>
+  <button class="option" onclick="setLocation('Stellenbosch')">Stellenbosch</button>
 
-  <div class="card">
-    <div class="store-name">Example Restaurant</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
+  <!-- OTHER MAJOR CITIES -->
+  <div class="section">Other Major Cities</div>
 
-  <div class="card">
-    <div class="store-name">Example Supermarket</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
-
-  <div class="card">
-    <div class="store-name">Example Clothing Store</div>
-    <div class="store-location">Local Area</div>
-    <button class="view-btn" onclick="viewStore()">View Store</button>
-  </div>
+  <button class="option" onclick="setLocation('Johannesburg')">Johannesburg</button>
+  <button class="option" onclick="setLocation('Pretoria')">Pretoria</button>
+  <button class="option" onclick="setLocation('Durban')">Durban</button>
+  <button class="option" onclick="setLocation('Port Elizabeth')">Gqeberha (Port Elizabeth)</button>
+  <button class="option" onclick="setLocation('Bloemfontein')">Bloemfontein</button>
+  <button class="option" onclick="setLocation('Polokwane')">Polokwane</button>
+  <button class="option" onclick="setLocation('Nelspruit')">Nelspruit (Mbombela)</button>
+  <button class="option" onclick="setLocation('Kimberley')">Kimberley</button>
+  <button class="option" onclick="setLocation('East London')">East London</button>
 
 </div>
 
@@ -124,13 +121,6 @@ h1 {
 /* Fade in */
 window.onload = function () {
   document.body.classList.add("loaded");
-
-  // Show selected filters
-  const category = localStorage.getItem("category") || "Stores";
-  const location = localStorage.getItem("location") || "Selected area";
-
-  document.getElementById("context").textContent =
-    category + " • " + location;
 };
 
 /* Back button */
@@ -143,13 +133,15 @@ function goBack() {
   }, 400);
 }
 
-/* Open store page */
-function viewStore() {
+/* Save location + go next */
+function setLocation(city) {
+  localStorage.setItem("location", city);
+
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.location.href = "store.html";
+    window.location.href = "listings.html";
   }, 400);
 }
 </script>
