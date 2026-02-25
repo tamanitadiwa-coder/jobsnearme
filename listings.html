@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Select Location — StoresNearm</title>
+<title>Listings — StoresNearm</title>
 
 <style>
 body {
@@ -11,12 +11,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #ffffff;
   color: #111;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
+  padding: 20px;
 
+  /* Fade fix */
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -24,49 +21,67 @@ body {
 body.loaded { opacity: 1; }
 body.fade-out { opacity: 0; }
 
-.container {
-  width: 90%;
-  max-width: 420px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-
-/* Back button */
 .back {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
-  color: #000;
+  margin-bottom: 15px;
 }
 
-/* Title */
 h1 {
-  font-size: 26px;
+  text-align: center;
   margin-bottom: 20px;
 }
 
-/* Section label */
-.section {
+.store-card {
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 20px;
   text-align: left;
-  font-weight: 600;
-  margin: 18px 0 8px;
 }
 
-/* Location buttons */
-.option {
+.store-card img {
   width: 100%;
-  padding: 16px;
-  margin-bottom: 8px;
-  border-radius: 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.store-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.store-summary {
+  font-size: 14px;
+  color: #555;
+  margin: 8px 0;
+}
+
+.store-info {
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.apply-btn, .whatsapp-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
-  background: #000;
-  color: #fff;
+}
+
+.apply-btn {
+  background: black;
+  color: white;
+}
+
+.whatsapp-btn {
+  background: #25D366;
+  color: white;
 }
 </style>
 </head>
@@ -75,75 +90,145 @@ h1 {
 
 <button class="back" onclick="goBack()">← Back</button>
 
-<div class="container">
-  <h1>Select Location</h1>
+<h1 id="pageTitle"></h1>
 
-  <!-- WESTERN CAPE FIRST -->
-  <div class="section">Western Cape</div>
-
-  <button class="option" onclick="setLocation('Cape Town CBD')">Cape Town CBD</button>
-  <button class="option" onclick="setLocation('Claremont')">Claremont</button>
-  <button class="option" onclick="setLocation('Rondebosch')">Rondebosch</button>
-  <button class="option" onclick="setLocation('Observatory')">Observatory</button>
-  <button class="option" onclick="setLocation('Newlands')">Newlands</button>
-  <button class="option" onclick="setLocation('Kenilworth')">Kenilworth</button>
-  <button class="option" onclick="setLocation('Wynberg')">Wynberg</button>
-  <button class="option" onclick="setLocation('Mitchells Plain')">Mitchells Plain</button>
-  <button class="option" onclick="setLocation('Khayelitsha')">Khayelitsha</button>
-  <button class="option" onclick="setLocation('Bellville')">Bellville</button>
-  <button class="option" onclick="setLocation('Parow')">Parow</button>
-  <button class="option" onclick="setLocation('Durbanville')">Durbanville</button>
-  <button class="option" onclick="setLocation('Table View')">Table View</button>
-  <button class="option" onclick="setLocation('Blouberg')">Blouberg</button>
-  <button class="option" onclick="setLocation('Sea Point')">Sea Point</button>
-  <button class="option" onclick="setLocation('Green Point')">Green Point</button>
-  <button class="option" onclick="setLocation('Hout Bay')">Hout Bay</button>
-  <button class="option" onclick="setLocation('Somerset West')">Somerset West</button>
-  <button class="option" onclick="setLocation('Strand')">Strand</button>
-  <button class="option" onclick="setLocation('Stellenbosch')">Stellenbosch</button>
-
-  <!-- OTHER MAJOR CITIES -->
-  <div class="section">Other Major Cities</div>
-
-  <button class="option" onclick="setLocation('Johannesburg')">Johannesburg</button>
-  <button class="option" onclick="setLocation('Pretoria')">Pretoria</button>
-  <button class="option" onclick="setLocation('Durban')">Durban</button>
-  <button class="option" onclick="setLocation('Port Elizabeth')">Gqeberha (Port Elizabeth)</button>
-  <button class="option" onclick="setLocation('Bloemfontein')">Bloemfontein</button>
-  <button class="option" onclick="setLocation('Polokwane')">Polokwane</button>
-  <button class="option" onclick="setLocation('Nelspruit')">Nelspruit (Mbombela)</button>
-  <button class="option" onclick="setLocation('Kimberley')">Kimberley</button>
-  <button class="option" onclick="setLocation('East London')">East London</button>
-
-</div>
+<div id="storeContainer"></div>
 
 <script>
+
 /* Fade in */
 window.onload = function () {
   document.body.classList.add("loaded");
 };
 
-/* Back button */
+/* Prevent white screen when navigating back */
+window.addEventListener("pageshow", function () {
+  document.body.classList.remove("fade-out");
+  document.body.classList.add("loaded");
+});
+
+/* Back button fix */
 function goBack() {
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.history.back();
+    window.location.href = "category.html";
   }, 400);
 }
 
-/* Save location + go next */
-function setLocation(city) {
-  localStorage.setItem("location", city);
+/* Get selected filters */
+const location = localStorage.getItem("location");
+const category = localStorage.getItem("category");
 
-  document.body.classList.remove("loaded");
-  document.body.classList.add("fade-out");
-
-  setTimeout(function () {
-    window.location.href = "listings.html";
-  }, 400);
+if (!location || !category) {
+  window.location.href = "location.html";
 }
+
+/* Dynamic page title */
+document.getElementById("pageTitle").innerText =
+  category.charAt(0).toUpperCase() + category.slice(1) +
+  " in " + location;
+
+/* STORE DATABASE */
+
+const stores = [
+
+  {
+    name: "Ocean Grill",
+    location: "Sea Point",
+    category: "restaurants",
+    summary: "Casual seaside dining with fresh seafood and local dishes.",
+    phone: "+27 21 123 4567",
+    email: "info@oceangrill.co.za",
+    website: "https://oceangrill.co.za",
+    whatsapp: "27211234567",
+    image: "https://images.unsplash.com/photo-1555992336-03a23c3d8a2c"
+  },
+
+  {
+    name: "Sea Point Sushi Bar",
+    location: "Sea Point",
+    category: "restaurants",
+    summary: "Modern sushi restaurant offering fresh sashimi and fusion rolls.",
+    phone: "+27 21 987 6543",
+    email: "jobs@sushibar.co.za",
+    website: "https://sushibar.co.za",
+    image: "https://images.unsplash.com/photo-1553621042-f6e147245754"
+  },
+
+  {
+    name: "Bean Street Café",
+    location: "Stellenbosch",
+    category: "cafes",
+    summary: "Artisan coffee shop serving specialty roasts and light meals.",
+    phone: "+27 21 555 7788",
+    email: "careers@beanstreet.co.za",
+    website: "https://beanstreet.co.za",
+    whatsapp: "27215557788",
+    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93"
+  },
+
+  {
+    name: "City Fresh Market",
+    location: "Johannesburg",
+    category: "supermarkets",
+    summary: "Large supermarket chain offering fresh produce and groceries.",
+    phone: "+27 11 444 2222",
+    email: "hr@cityfresh.co.za",
+    website: "https://cityfresh.co.za",
+    image: "https://images.unsplash.com/photo-1542838132-92c53300491e"
+  }
+
+];
+
+/* Filter stores */
+const filteredStores = stores.filter(store =>
+  store.location === location &&
+  store.category === category
+);
+
+/* Render stores */
+const container = document.getElementById("storeContainer");
+
+if (filteredStores.length === 0) {
+  container.innerHTML = "<p>No stores found in this category for this location.</p>";
+} else {
+  filteredStores.forEach(store => {
+
+    const card = document.createElement("div");
+    card.className = "store-card";
+
+    let whatsappButton = "";
+    if (store.whatsapp) {
+      whatsappButton = `
+        <button class="whatsapp-btn"
+          onclick="window.open('https://wa.me/${store.whatsapp}?text=Hello%20${encodeURIComponent(store.name)}%20I%20am%20interested%20in%20applying','_blank')">
+          WhatsApp
+        </button>
+      `;
+    }
+
+    card.innerHTML = `
+      <img src="${store.image}" alt="${store.name}">
+      <div class="store-name">${store.name}</div>
+      <div class="store-summary">${store.summary}</div>
+      <div class="store-info"><strong>Phone:</strong> ${store.phone}</div>
+      <div class="store-info"><strong>Email:</strong> ${store.email}</div>
+      <div class="store-info"><strong>Website:</strong> ${store.website}</div>
+
+      <button class="apply-btn"
+        onclick="window.location.href='mailto:${store.email}?subject=Job Application - ${store.name}&body=Hello ${store.name}, I would like to apply.'">
+        Apply
+      </button>
+
+      ${whatsappButton}
+    `;
+
+    container.appendChild(card);
+  });
+}
+
 </script>
 
 </body>
