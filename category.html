@@ -99,37 +99,28 @@ h1 {
 </div>
 
 <script>
-/* Fade in */
+
+/* Ensure location exists before showing this page */
 window.onload = function () {
+
+  const selectedLocation = localStorage.getItem("location");
+
+  if (!selectedLocation) {
+    window.location.href = "location.html";
+    return;
+  }
+
   document.body.classList.add("loaded");
 };
 
-/* Fix white screen when navigating back */
+/* FIX: Properly restore page when navigating back */
 window.addEventListener("pageshow", function (event) {
-  if (event.persisted) {
-    document.body.classList.remove("fade-out");
-    document.body.classList.add("loaded");
-  }
+  document.body.classList.remove("fade-out");
+  document.body.classList.add("loaded");
 });
 
-/* Back button — always works */
+/* Back button — now ALWAYS goes to location page safely */
 function goBack() {
-  document.body.classList.remove("loaded");
-  document.body.classList.add("fade-out");
-
-  setTimeout(function () {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = "index.html";
-    }
-  }, 400);
-}
-
-/* Save category + go next */
-function selectCategory(category) {
-  localStorage.setItem("category", category);
-
   document.body.classList.remove("loaded");
   document.body.classList.add("fade-out");
 
@@ -137,6 +128,27 @@ function selectCategory(category) {
     window.location.href = "location.html";
   }, 400);
 }
+
+/* Save category + go next */
+function selectCategory(category) {
+
+  const selectedLocation = localStorage.getItem("location");
+
+  if (!selectedLocation) {
+    window.location.href = "location.html";
+    return;
+  }
+
+  localStorage.setItem("category", category);
+
+  document.body.classList.remove("loaded");
+  document.body.classList.add("fade-out");
+
+  setTimeout(function () {
+    window.location.href = "listings.html";
+  }, 400);
+}
+
 </script>
 
 </body>
