@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Select Location — StoresNearm</title>
+<title>Store — StoresNearm</title>
 
 <style>
 body {
@@ -11,11 +11,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: #ffffff;
   color: #111;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
+  padding: 20px;
 
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -24,49 +20,78 @@ body {
 body.loaded { opacity: 1; }
 body.fade-out { opacity: 0; }
 
-.container {
-  width: 90%;
-  max-width: 420px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-
-/* Back button */
 .back {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
-  color: #000;
+  margin-bottom: 15px;
 }
 
-/* Title */
-h1 {
-  font-size: 26px;
-  margin-bottom: 20px;
-}
-
-/* Section label */
-.section {
-  text-align: left;
-  font-weight: 600;
-  margin: 18px 0 8px;
-}
-
-/* Location buttons */
-.option {
+.store-image {
   width: 100%;
-  padding: 16px;
-  margin-bottom: 8px;
   border-radius: 14px;
+  margin-bottom: 15px;
+}
+
+.store-name {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.store-summary {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.store-info {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.store-info a {
+  color: black;
+  text-decoration: underline;
+}
+
+.section-title {
+  margin-top: 25px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+button.apply-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
   border: none;
+  background: black;
+  color: white;
   font-size: 15px;
   cursor: pointer;
-  background: #000;
-  color: #fff;
+}
+
+button.whatsapp-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #25D366;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 </style>
 </head>
@@ -75,53 +100,20 @@ h1 {
 
 <button class="back" onclick="goBack()">← Back</button>
 
-<div class="container">
-  <h1>Select Location</h1>
-
-  <!-- WESTERN CAPE FIRST -->
-  <div class="section">Western Cape</div>
-
-  <button class="option" onclick="setLocation('Cape Town CBD')">Cape Town CBD</button>
-  <button class="option" onclick="setLocation('Claremont')">Claremont</button>
-  <button class="option" onclick="setLocation('Rondebosch')">Rondebosch</button>
-  <button class="option" onclick="setLocation('Observatory')">Observatory</button>
-  <button class="option" onclick="setLocation('Newlands')">Newlands</button>
-  <button class="option" onclick="setLocation('Kenilworth')">Kenilworth</button>
-  <button class="option" onclick="setLocation('Wynberg')">Wynberg</button>
-  <button class="option" onclick="setLocation('Mitchells Plain')">Mitchells Plain</button>
-  <button class="option" onclick="setLocation('Khayelitsha')">Khayelitsha</button>
-  <button class="option" onclick="setLocation('Bellville')">Bellville</button>
-  <button class="option" onclick="setLocation('Parow')">Parow</button>
-  <button class="option" onclick="setLocation('Durbanville')">Durbanville</button>
-  <button class="option" onclick="setLocation('Table View')">Table View</button>
-  <button class="option" onclick="setLocation('Blouberg')">Blouberg</button>
-  <button class="option" onclick="setLocation('Sea Point')">Sea Point</button>
-  <button class="option" onclick="setLocation('Green Point')">Green Point</button>
-  <button class="option" onclick="setLocation('Hout Bay')">Hout Bay</button>
-  <button class="option" onclick="setLocation('Somerset West')">Somerset West</button>
-  <button class="option" onclick="setLocation('Strand')">Strand</button>
-  <button class="option" onclick="setLocation('Stellenbosch')">Stellenbosch</button>
-
-  <!-- OTHER MAJOR CITIES -->
-  <div class="section">Other Major Cities</div>
-
-  <button class="option" onclick="setLocation('Johannesburg')">Johannesburg</button>
-  <button class="option" onclick="setLocation('Pretoria')">Pretoria</button>
-  <button class="option" onclick="setLocation('Durban')">Durban</button>
-  <button class="option" onclick="setLocation('Port Elizabeth')">Gqeberha (Port Elizabeth)</button>
-  <button class="option" onclick="setLocation('Bloemfontein')">Bloemfontein</button>
-  <button class="option" onclick="setLocation('Polokwane')">Polokwane</button>
-  <button class="option" onclick="setLocation('Nelspruit')">Nelspruit (Mbombela)</button>
-  <button class="option" onclick="setLocation('Kimberley')">Kimberley</button>
-  <button class="option" onclick="setLocation('East London')">East London</button>
-
-</div>
+<div id="storeContent"></div>
 
 <script>
+
 /* Fade in */
 window.onload = function () {
   document.body.classList.add("loaded");
 };
+
+/* Prevent white screen */
+window.addEventListener("pageshow", function () {
+  document.body.classList.remove("fade-out");
+  document.body.classList.add("loaded");
+});
 
 /* Back button */
 function goBack() {
@@ -129,21 +121,83 @@ function goBack() {
   document.body.classList.add("fade-out");
 
   setTimeout(function () {
-    window.history.back();
-  }, 400);
-}
-
-/* Save location + go next */
-function setLocation(city) {
-  localStorage.setItem("location", city);
-
-  document.body.classList.remove("loaded");
-  document.body.classList.add("fade-out");
-
-  setTimeout(function () {
     window.location.href = "listings.html";
   }, 400);
 }
+
+/* Get selected store */
+const storeData = localStorage.getItem("selectedStore");
+
+if (!storeData) {
+  window.location.href = "location.html";
+}
+
+const store = JSON.parse(storeData);
+
+const container = document.getElementById("storeContent");
+
+/* WhatsApp Button */
+let whatsappButton = "";
+if (store.whatsapp) {
+  whatsappButton = `
+    <button class="whatsapp-btn"
+      onclick="window.open('https://wa.me/${store.whatsapp}?text=Hello%20${encodeURIComponent(store.name)}%20I%20am%20interested%20in%20applying','_blank')">
+      Message on WhatsApp
+    </button>
+  `;
+}
+
+container.innerHTML = `
+  <img class="store-image" src="${store.image}" alt="${store.name}">
+  <div class="store-name">${store.name}</div>
+  <div class="store-summary">${store.summary}</div>
+
+  <div class="store-info"><strong>Phone:</strong>
+    <a href="tel:${store.phone.replace(/\s+/g,'')}">${store.phone}</a>
+  </div>
+
+  <div class="store-info"><strong>Email:</strong>
+    <a href="mailto:${store.email}">${store.email}</a>
+  </div>
+
+  <div class="store-info"><strong>Website:</strong>
+    <a href="${store.website}" target="_blank">${store.website}</a>
+  </div>
+
+  ${whatsappButton}
+
+  <div class="section-title">Apply to this Store</div>
+
+  <input type="text" id="name" placeholder="Your Full Name" required>
+  <input type="email" id="email" placeholder="Your Email Address" required>
+  <textarea id="message" rows="4" placeholder="Short message to the store"></textarea>
+
+  <button class="apply-btn" onclick="applyNow()">Send Application</button>
+`;
+
+/* Apply function */
+function applyNow() {
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const message = document.getElementById("message").value;
+
+  if (!name || !email) {
+    alert("Please fill in required fields.");
+    return;
+  }
+
+  const subject = encodeURIComponent("Job Application - " + store.name);
+  const body = encodeURIComponent(
+    "Hello " + store.name + ",\n\n" +
+    "My name is " + name + ".\n" +
+    "My email is " + email + ".\n\n" +
+    message + "\n\nRegards,\n" + name
+  );
+
+  window.location.href = `mailto:${store.email}?subject=${subject}&body=${body}`;
+}
+
 </script>
 
 </body>
