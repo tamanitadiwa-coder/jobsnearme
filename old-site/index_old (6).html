@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Category — StoresNearm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #fafaf8;
+    --gray: #6b6b6b;
+    --light: #f0efeb;
+    --border: #e0dfd9;
+    --radius: 14px;
+    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'DM Serif Display', serif;
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { height: 100%; }
+
+  body {
+    min-height: 100%;
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    opacity: 1;
+    transition: opacity var(--transition);
+  }
+
+  body.visible { opacity: 1; }
+  body.out { opacity: 0; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(250, 250, 248, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 14px 7px 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--black);
+    transition: background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .back-btn:active { background: var(--light); }
+
+  .topbar-info { flex: 1; min-width: 0; }
+  .topbar-title { font-size: 15px; font-weight: 500; color: var(--black); }
+  .topbar-sub { font-size: 12px; color: var(--gray); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .content { padding: 12px 0 40px; }
+
+  .section-label {
+    padding: 20px 20px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a0a09a;
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 16px;
+    margin-bottom: 8px;
+  }
+
+  .cat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .cat-card:active { background: var(--light); border-color: #c0bfb9; }
+
+  .cat-icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .cat-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.3;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" onclick="goBack()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    Back
+  </button>
+  <div class="topbar-info">
+    <div class="topbar-title">What are you looking for?</div>
+    <div class="topbar-sub" id="locationLabel"></div>
+  </div>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const CATEGORIES = [
+  {
+    group: "Food & Drink",
+    items: [
+      { key: "restaurant", label: "Restaurants", icon: "🍽️" },
+      { key: "cafe", label: "Cafés & Coffee", icon: "☕" },
+      { key: "fast_food", label: "Fast Food", icon: "🍔" },
+      { key: "bakery", label: "Bakeries", icon: "🥐" },
+      { key: "bar", label: "Bars & Pubs", icon: "🍺" },
+      { key: "liquor_store", label: "Liquor Stores", icon: "🍷" }
+    ]
+  },
+  {
+    group: "Shopping",
+    items: [
+      { key: "supermarket", label: "Supermarkets", icon: "🛒" },
+      { key: "clothing_store", label: "Clothing & Fashion", icon: "👕" },
+      { key: "electronics_store", label: "Electronics", icon: "📱" },
+      { key: "furniture_store", label: "Furniture & Home", icon: "🛋️" },
+      { key: "hardware_store", label: "Hardware Stores", icon: "🔧" },
+      { key: "beauty_store", label: "Beauty & Cosmetics", icon: "💄" },
+      { key: "book_store", label: "Bookshops", icon: "📚" },
+      { key: "jewelry_store", label: "Jewellery", icon: "💍" },
+      { key: "shoe_store", label: "Shoe Stores", icon: "👟" },
+      { key: "florist", label: "Florists", icon: "💐" },
+      { key: "pet_store", label: "Pet Shops", icon: "🐾" }
+    ]
+  },
+  {
+    group: "Health & Wellness",
+    items: [
+      { key: "pharmacy", label: "Pharmacies", icon: "💊" },
+      { key: "hospital", label: "Hospitals & Clinics", icon: "🏥" },
+      { key: "dentist", label: "Dentists", icon: "🦷" },
+      { key: "gym", label: "Gyms & Fitness", icon: "🏋️" },
+      { key: "spa", label: "Spas & Wellness", icon: "💆" },
+      { key: "hair_care", label: "Hair & Nail Salons", icon: "✂️" }
+    ]
+  },
+  {
+    group: "Services & Finance",
+    items: [
+      { key: "bank", label: "Banks & ATMs", icon: "🏦" },
+      { key: "insurance_agency", label: "Insurance", icon: "🛡️" },
+      { key: "laundry", label: "Laundry & Dry Clean", icon: "👔" },
+      { key: "car_repair", label: "Car Repair & Wash", icon: "🚗" },
+      { key: "gas_station", label: "Petrol Stations", icon: "⛽" },
+      { key: "car_dealer", label: "Car Dealerships", icon: "🚘" },
+      { key: "real_estate_agency", label: "Estate Agents", icon: "🏠" },
+      { key: "lawyer", label: "Legal Services", icon: "⚖️" },
+      { key: "accounting", label: "Accountants", icon: "🧾" }
+    ]
+  },
+  {
+    group: "Hotels & Travel",
+    items: [
+      { key: "lodging", label: "Hotels & B&Bs", icon: "🏨" },
+      { key: "travel_agency", label: "Travel Agencies", icon: "✈️" },
+      { key: "car_rental", label: "Car Rental", icon: "🔑" }
+    ]
+  },
+  {
+    group: "Education & More",
+    items: [
+      { key: "school", label: "Schools", icon: "🎓" },
+      { key: "library", label: "Libraries", icon: "📖" },
+      { key: "place_of_worship", label: "Places of Worship", icon: "🙏" },
+      { key: "museum", label: "Museums", icon: "🏛️" },
+      { key: "movie_theater", label: "Cinemas", icon: "🎬" }
+    ]
+  }
+];
+
+  function buildCategories() {
+    const content = document.getElementById('content');
+    CATEGORIES.forEach(group => {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.textContent = group.group;
+      content.appendChild(label);
+
+      const grid = document.createElement('div');
+      grid.className = 'cat-grid';
+
+      group.items.forEach(cat => {
+        const card = document.createElement('div');
+        card.className = 'cat-card';
+        card.innerHTML = `
+          <span class="cat-icon">${cat.icon}</span>
+          <span class="cat-name">${cat.label}</span>
+        `;
+        card.onclick = () => pick(cat.key, cat.label);
+        grid.appendChild(card);
+      });
+
+      content.appendChild(grid);
+    });
+  }
+
+  function pick(key, label) {
+    localStorage.setItem('sn_category', key);
+    localStorage.setItem('sn_category_label', label);
+    document.body.classList.remove('visible');
+    document.body.classList.add('out');
+    setTimeout(() => window.location.href = 'listings.html', 350);
+  }
+
+  function goBack() {
+    document.body.classList.remove('visible');
+    document.body.classList.add('out');
+    setTimeout(() => window.location.href = 'location.html', 350);
+  }
+
+  window.addEventListener('pageshow', () => {
+    document.body.classList.remove('out');
+    document.body.classList.add('visible');
+  });
+
+  window.addEventListener('load', () => {
+    const location = localStorage.getItem('sn_location') || "Cape Town";
+    const label = document.getElementById('locationLabel');
+    if (label) label.textContent = '📍 ' + location;
+
+    buildCategories();
+    document.body.classList.add('visible');
+  });
+</script>
+</body>
+</html>

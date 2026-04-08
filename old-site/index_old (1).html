@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>StoresNearm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #fafaf8;
+    --gray: #6b6b6b;
+    --light: #f0efeb;
+    --border: #e0dfd9;
+    --green: #1a7a4a;
+    --green-light: #e8f5ee;
+    --radius: 14px;
+    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'DM Serif Display', serif;
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+  body.visible { opacity: 1; }
+  body.out { opacity: 0; }
+
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .logo-mark {
+    width: 56px;
+    height: 56px;
+    background: var(--black);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+  }
+
+  .logo-mark svg {
+    width: 28px;
+    height: 28px;
+    fill: var(--white);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 8vw, 44px);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: var(--black);
+  }
+
+  .tagline {
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0 auto 48px;
+  }
+
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 52px;
+  }
+
+  .pill {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 400;
+  }
+
+  .btn-primary {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px 24px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: opacity 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:active { transform: scale(0.98); opacity: 0.85; }
+
+  .footer-note {
+    margin-top: 24px;
+    font-size: 12px;
+    color: #b0b0a8;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+    </svg>
+  </div>
+
+  <h1>Stores<br>Near You</h1>
+
+  <p class="tagline">Find local stores instantly — real photos, phone numbers, and directions in seconds.</p>
+
+  <div class="pill-list">
+    <span class="pill">Restaurants</span>
+    <span class="pill">Pharmacies</span>
+    <span class="pill">Supermarkets</span>
+    <span class="pill">Coffee shops</span>
+    <span class="pill">+ more</span>
+  </div>
+
+  <button class="btn-primary" onclick="start()">
+    Find stores near me
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+  </button>
+
+  <p class="footer-note">Western Cape, Gauteng &amp; more</p>
+</div>
+
+<script>
+  window.addEventListener('load', () => document.body.classList.add('visible'));
+
+  function start() {
+    document.body.classList.remove('visible');
+    document.body.classList.add('out');
+    setTimeout(() => window.location.href = 'location.html', 350);
+  }
+</script>
+</body>
+</html>

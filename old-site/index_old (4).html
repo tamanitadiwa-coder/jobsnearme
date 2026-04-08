@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Store — StoresNearm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #fafaf8;
+    --gray: #6b6b6b;
+    --light: #f0efeb;
+    --border: #e0dfd9;
+    --green: #1a7a4a;
+    --green-bg: #e8f5ee;
+    --red: #c0392b;
+    --radius: 14px;
+    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'DM Serif Display', serif;
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { height: 100%; }
+  body {
+    min-height: 100%;
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    opacity: 0;
+    transition: opacity var(--transition);
+    padding-bottom: 120px;
+  }
+  body.visible { opacity: 1; }
+  body.out { opacity: 0; }
+
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    background: var(--light);
+    overflow: hidden;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    background: var(--light);
+  }
+
+  .back-float {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(250, 250, 248, 0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(224, 223, 217, 0.8);
+    border-radius: 100px;
+    padding: 8px 14px 8px 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--black);
+    transition: background 0.15s;
+  }
+  .back-float:active { background: var(--light); }
+
+  .body { padding: 20px 20px 0; }
+
+  .store-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .store-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    color: var(--black);
+  }
+
+  .rating-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .rating-score {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .rating-stars { color: #f5a623; font-size: 13px; letter-spacing: 1px; }
+
+  .rating-count { font-size: 11px; color: #a0a09a; }
+
+  .address-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .address-text {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .badge-open {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--green-bg);
+    color: var(--green);
+  }
+
+  .badge-closed {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: #fde8e6;
+    color: var(--red);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 0 20px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a0a09a;
+    margin-bottom: 12px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .info-row:last-child { border-bottom: none; }
+
+  .info-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--gray);
+  }
+
+  .info-value {
+    font-size: 14px;
+    color: var(--black);
+    font-weight: 400;
+    text-align: right;
+  }
+
+  .info-value a {
+    color: var(--black);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .hours-list {
+    margin-top: 4px;
+  }
+  .hours-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-day { color: var(--gray); }
+  .hours-time { color: var(--black); font-weight: 400; }
+  .hours-today { font-weight: 500; }
+  .hours-today .hours-day, .hours-today .hours-time { color: var(--black); }
+
+  /* Sticky bottom action bar */
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(250, 250, 248, 0.97);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .cta-btn {
+    flex: 1;
+    padding: 14px 10px;
+    border-radius: var(--radius);
+    border: none;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: opacity 0.15s, transform 0.12s;
+  }
+  .cta-btn:active { transform: scale(0.97); opacity: 0.85; }
+
+  .cta-call {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .cta-whatsapp {
+    background: #25D366;
+    color: white;
+  }
+
+  .cta-directions {
+    background: var(--light);
+    color: var(--black);
+    border: 1px solid var(--border);
+  }
+
+  .no-contact {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--gray);
+    text-align: center;
+  }
+
+  /* ── AdSense Interstitial Overlay ── */
+  .ad-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--white);
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 24px 32px;
+    text-align: center;
+  }
+  .ad-overlay.show { display: flex; }
+
+  .ad-top { width: 100%; }
+  .ad-eyebrow {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #a0a09a; margin-bottom: 6px;
+  }
+  .ad-tagline {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 400;
+    color: var(--black); line-height: 1.3; margin-bottom: 4px;
+  }
+  .ad-sub { font-size: 13px; color: var(--gray); }
+
+  .ad-slot-wrap {
+    width: 100%; max-width: 360px;
+    min-height: 250px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .ad-placeholder-text { font-size: 13px; color: #b0b0a8; }
+
+  .ad-bottom { width: 100%; }
+  .ad-countdown {
+    font-size: 13px; color: var(--gray); margin-bottom: 16px;
+  }
+  .ad-countdown strong { color: var(--black); font-weight: 500; }
+
+  .ad-skip-btn {
+    width: 100%; padding: 15px;
+    background: var(--black); color: var(--white);
+    border: none; border-radius: var(--radius);
+    font-family: var(--font-body); font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: opacity 0.15s;
+    opacity: 0.35; pointer-events: none;
+  }
+  .ad-skip-btn.ready { opacity: 1; pointer-events: auto; }
+  .ad-skip-btn.ready:active { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<!-- AdSense script — replace publisher ID with yours from AdSense dashboard -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+<!-- Interstitial overlay — appears every 3 store detail views -->
+<div class="ad-overlay" id="adOverlay">
+  <div class="ad-top">
+    <div class="ad-eyebrow">Advertisement</div>
+    <div class="ad-tagline">Keeping StoresNearm free</div>
+    <div class="ad-sub">A short ad lets you keep browsing for free</div>
+  </div>
+
+  <div class="ad-slot-wrap">
+    <!-- Replace data-ad-client and data-ad-slot with your AdSense values -->
+    <ins class="adsbygoogle"
+      style="display:block;width:320px;height:250px;"
+      data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+      data-ad-slot="XXXXXXXXXX"
+      data-ad-format="rectangle">
+    </ins>
+  </div>
+
+  <div class="ad-bottom">
+    <div class="ad-countdown">
+      Continue in <strong id="adTimer">30</strong> seconds
+    </div>
+    <button class="ad-skip-btn" id="adSkipBtn" onclick="dismissAd()">
+      Continue to store
+    </button>
+  </div>
+</div>
+
+<div class="hero" id="heroSection">
+  <div class="hero-placeholder" id="heroPlaceholder"></div>
+  <button class="back-float" onclick="goBack()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    Back
+  </button>
+</div>
+
+<div class="body">
+  <div id="storeBody"></div>
+</div>
+
+<div class="action-bar" id="actionBar"></div>
+
+<script>
+  /* ── Ad Gate ── */
+  const AD_FREQUENCY = 3;   // show ad every N store views
+  const AD_DURATION  = 30;  // seconds countdown
+
+  function getViewCount() {
+    return parseInt(localStorage.getItem('sn_view_count') || '0', 10);
+  }
+  function incrementViewCount() {
+    localStorage.setItem('sn_view_count', getViewCount() + 1);
+  }
+  function resetViewCount() {
+    localStorage.setItem('sn_view_count', '0');
+  }
+
+  function startAdCountdown() {
+    let remaining = AD_DURATION;
+    const timerEl  = document.getElementById('adTimer');
+    const skipBtn  = document.getElementById('adSkipBtn');
+    const countEl  = document.querySelector('.ad-countdown');
+
+    timerEl.textContent = remaining;
+
+    /* Push AdSense ad unit */
+    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+
+    const tick = setInterval(() => {
+      remaining--;
+      timerEl.textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(tick);
+        countEl.style.display = 'none';
+        skipBtn.classList.add('ready');
+        skipBtn.textContent = 'Continue to store →';
+      }
+    }, 1000);
+  }
+
+  function dismissAd() {
+    resetViewCount();
+    document.getElementById('adOverlay').classList.remove('show');
+    document.body.classList.add('visible');
+  }
+
+  function maybeShowAd() {
+    incrementViewCount();
+    const count = getViewCount();
+    if (count > 0 && count % AD_FREQUENCY === 0) {
+      document.getElementById('adOverlay').classList.add('show');
+      startAdCountdown();
+      return true; /* ad is showing — don't fade body in yet */
+    }
+    return false;
+  }
+
+  /* ── Store data ── */
+  const raw = localStorage.getItem('sn_selected_place');
+  const icon = localStorage.getItem('sn_category_icon') || '🏪';
+  const GOOGLE_API_KEY = localStorage.getItem('sn_api_key') || 'YOUR_GOOGLE_PLACES_API_KEY_HERE';
+
+  if (!raw) { window.location.href = 'listings.html'; }
+
+  const place = JSON.parse(raw);
+
+  /* Hero photo */
+  const placeholder = document.getElementById('heroPlaceholder');
+  placeholder.textContent = icon;
+
+  if (place.photos && place.photos[0] && GOOGLE_API_KEY !== 'YOUR_GOOGLE_PLACES_API_KEY_HERE') {
+    const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${place.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
+    const img = document.createElement('img');
+    img.className = 'hero-img';
+    img.src = photoUrl;
+    img.alt = place.name;
+    img.onerror = () => { img.remove(); };
+    document.getElementById('heroSection').insertBefore(img, placeholder);
+    placeholder.style.display = 'none';
+    img.onload = () => { placeholder.style.display = 'none'; };
+  }
+
+  /* Rating stars */
+  function stars(r) {
+    if (!r) return '';
+    return '★'.repeat(Math.floor(r)) + (r % 1 >= 0.5 ? '½' : '');
+  }
+
+  /* Days */
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const todayIdx = new Date().getDay();
+
+  /* Hours */
+  function renderHours(weekday) {
+    if (!weekday || !weekday.length) return '';
+    return weekday.map((line, i) => {
+      const isToday = i === todayIdx;
+      const [day, ...rest] = line.split(': ');
+      return `<div class="hours-row${isToday ? ' hours-today' : ''}">
+        <span class="hours-day">${day}</span>
+        <span class="hours-time">${rest.join(': ')}</span>
+      </div>`;
+    }).join('');
+  }
+
+  /* Phone formatter */
+  function cleanPhone(p) {
+    return p ? p.replace(/[^0-9+]/g, '') : null;
+  }
+
+  function buildWhatsApp(phone, name) {
+    if (!phone) return null;
+    const clean = cleanPhone(phone);
+    const intl = clean.startsWith('0') ? '27' + clean.slice(1) : clean.replace('+', '');
+    const msg = encodeURIComponent('Hi ' + name + ', I found you on StoresNearm. ');
+    return 'https://wa.me/' + intl + '?text=' + msg;
+  }
+
+  const isOpen = place.opening_hours ? place.opening_hours.open_now : null;
+  const phone = place.formatted_phone_number || place.international_phone_number || null;
+  const website = place.website || null;
+  const waLink = buildWhatsApp(phone, place.name);
+  const mapsLink = `https://maps.google.com/?q=${encodeURIComponent(place.name + ' ' + (place.vicinity || ''))}`;
+  const openBadge = isOpen === true
+    ? `<span class="badge-open">Open now</span>`
+    : isOpen === false
+    ? `<span class="badge-closed">Closed now</span>`
+    : '';
+
+  const hoursHtml = place.opening_hours && place.opening_hours.weekday_text
+    ? `<div class="divider"></div>
+       <div class="section-title">Opening hours</div>
+       <div class="hours-list">${renderHours(place.opening_hours.weekday_text)}</div>`
+    : '';
+
+  const infoRows = [];
+  if (phone) infoRows.push(`<div class="info-row">
+    <span class="info-label">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--gray)"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+      Phone
+    </span>
+    <span class="info-value"><a href="tel:${cleanPhone(phone)}">${phone}</a></span>
+  </div>`);
+
+  if (website) infoRows.push(`<div class="info-row">
+    <span class="info-label">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--gray)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      Website
+    </span>
+    <span class="info-value"><a href="${website}" target="_blank" rel="noopener">${website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></span>
+  </div>`);
+
+  if (place.vicinity) infoRows.push(`<div class="info-row">
+    <span class="info-label">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--gray)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+      Address
+    </span>
+    <span class="info-value">${place.vicinity}</span>
+  </div>`);
+
+  document.getElementById('storeBody').innerHTML = `
+    <div class="store-header">
+      <div class="store-name">${place.name}</div>
+      ${place.rating ? `
+      <div class="rating-block">
+        <div class="rating-score">${place.rating.toFixed(1)}</div>
+        <div class="rating-stars">${stars(place.rating)}</div>
+        ${place.user_ratings_total ? `<div class="rating-count">${place.user_ratings_total.toLocaleString()} reviews</div>` : ''}
+      </div>` : ''}
+    </div>
+
+    <div class="address-row">
+      <span class="address-text">${place.vicinity || ''}</span>
+    </div>
+
+    <div class="status-row">
+      ${openBadge}
+      ${place.price_level ? '<span style="font-size:13px;color:var(--gray)">' + '₹'.repeat(place.price_level) + '</span>' : ''}
+    </div>
+
+    <div class="divider"></div>
+
+    ${infoRows.length ? `<div class="section-title">Contact & Info</div>${infoRows.join('')}` : ''}
+
+    ${hoursHtml}
+  `;
+
+  /* Action bar */
+  const bar = document.getElementById('actionBar');
+  let barHTML = '';
+
+  if (phone) barHTML += `<a class="cta-btn cta-call" href="tel:${cleanPhone(phone)}">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+    Call
+  </a>`;
+
+  if (waLink) barHTML += `<a class="cta-btn cta-whatsapp" href="${waLink}" target="_blank" rel="noopener">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    WhatsApp
+  </a>`;
+
+  barHTML += `<a class="cta-btn cta-directions" href="${mapsLink}" target="_blank" rel="noopener">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21.71 11.29l-9-9a1 1 0 00-1.42 0l-9 9a1 1 0 000 1.42l9 9a1 1 0 001.42 0l9-9a1 1 0 000-1.42zM14 14.5V12h-4v3H8v-4a1 1 0 011-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
+    Directions
+  </a>`;
+
+  bar.innerHTML = barHTML;
+
+  function goBack() {
+    document.body.classList.remove('visible');
+    document.body.classList.add('out');
+    setTimeout(() => window.location.href = 'listings.html', 350);
+  }
+
+  window.addEventListener('pageshow', () => {
+    document.body.classList.remove('out');
+    if (!document.getElementById('adOverlay').classList.contains('show')) {
+      document.body.classList.add('visible');
+    }
+  });
+
+  window.addEventListener('load', () => {
+    const adShowing = maybeShowAd();
+    if (!adShowing) {
+      document.body.classList.add('visible');
+    }
+  });
+</script>
+</body>
+</html>

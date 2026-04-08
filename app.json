@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "StoresNearm",
+    "slug": "storesnearm",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "dark",
+    "experiments": {
+      "newArchEnabled": false
+    },
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0a0a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tamanytech.storesnearm",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "StoresNearm uses your location to find stores near you."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#0a0a0a"
+      },
+      "package": "com.tamanytech.storesnearm",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "StoresNearm uses your location to find stores near you."
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-4300110462026786~9945966957",
+          "iosAppId": "ca-app-pub-4300110462026786~4885211961"
+        }
+      ]
+    ]
+  }
+}
