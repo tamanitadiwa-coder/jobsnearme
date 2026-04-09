@@ -1,15 +1,2 @@
-node_modules/
-.expo/
-dist/
-web-build/
-android/
-ios/
-.DS_Store
-.env
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-google-services.json
-GoogleService-Info.plist
+"node_modules/" 
+node_modules

@@ -6,9 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "dark",
-    "experiments": {
-      "newArchEnabled": false
-    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -50,6 +47,11 @@
           "iosAppId": "ca-app-pub-4300110462026786~4885211961"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1f9f2337-ed9f-4c05-a83c-34b766662aff"
+      }
+    }
   }
 }

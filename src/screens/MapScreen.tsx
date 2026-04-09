@@ -7,8 +7,10 @@ import {
   Modal,
   Pressable,
   Linking,
+  ScrollView,
+  Platform,
+  Image,
 } from 'react-native';
-import MapView, { Marker, Circle, PROVIDER_DEFAULT } from 'react-native-maps';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -70,6 +72,44 @@ function formatDistance(km: number | null): string {
   return km < 1 ? `${Math.round(km * 1000)} m` : `${km} km`;
 }
 
+function openStoreDirections(store: Store) {
+  const url = `https://www.openstreetmap.org/?mlat=${store.lat}&mlon=${store.lon}&zoom=17`;
+  Linking.openURL(url).catch(() => {});
+}
+
+// Try common image field names without forcing Store type changes
+function getStoreImage(store: Store): string | null {
+  const s = store as Store & {
+    image?: string | null;
+    imageUrl?: string | null;
+    photo?: string | null;
+    photoUrl?: string | null;
+    picture?: string | null;
+    pictureUrl?: string | null;
+    thumbnail?: string | null;
+    thumbnailUrl?: string | null;
+  };
+
+  const candidates = [
+    s.image,
+    s.imageUrl,
+    s.photo,
+    s.photoUrl,
+    s.picture,
+    s.pictureUrl,
+    s.thumbnail,
+    s.thumbnailUrl,
+  ];
+
+  for (const value of candidates) {
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+
+  return null;
+}
+
 // ---------------------------------------------------------------------------
 // MapScreen
 // ---------------------------------------------------------------------------
@@ -78,10 +118,12 @@ export default function MapScreen() {
   const navigation = useNavigation<MapNav>();
   const { stores, userLat, userLon } = route.params;
 
-  const mapRef = useRef<MapView>(null);
   const [selected, setSelected] = useState<Store | null>(null);
+  const mapRef = useRef<any>(null);
 
   const recenter = useCallback(() => {
+    if (Platform.OS === 'web') return;
+
     mapRef.current?.animateToRegion(
       {
         latitude: userLat,
@@ -94,17 +136,145 @@ export default function MapScreen() {
   }, [userLat, userLon]);
 
   const openDirections = useCallback((store: Store) => {
-    const url = `https://www.openstreetmap.org/?mlat=${store.lat}&mlon=${store.lon}&zoom=17`;
-    Linking.openURL(url).catch(() => {});
+    openStoreDirections(store);
   }, []);
+
+  // -------------------------------------------------------------------------
+  // Web fallback
+  // -------------------------------------------------------------------------
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.webHeader}>
+          <Text style={styles.webTitle}>Nearby stores</Text>
+          <Text style={styles.webSubtitle}>
+            Interactive map is available in the mobile app.
+          </Text>
+        </View>
+
+        <View style={styles.webBadgeWrap}>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>
+              {stores.length} store{stores.length !== 1 ? 's' : ''} within 2 km
+            </Text>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.webMapsBtn}
+          onPress={() =>
+            Linking.openURL(
+              `https://www.openstreetmap.org/#map=15/${userLat}/${userLon}`
+            ).catch(() => {})
+          }
+          activeOpacity={0.85}
+        >
+          <Text style={styles.webMapsBtnText}>Open area in browser map</Text>
+        </TouchableOpacity>
+
+        <ScrollView
+          contentContainerStyle={styles.webListContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {stores.map((store) => {
+            const storeImage = getStoreImage(store);
+
+            return (
+              <View key={store.id} style={styles.webCard}>
+                {storeImage ? (
+                  <Image
+                    source={{ uri: storeImage }}
+                    style={styles.webCardImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={styles.webCardImageFallback}>
+                    <Text style={styles.webCardImageFallbackIcon}>
+                      {getCategoryIcon(store.category)}
+                    </Text>
+                  </View>
+                )}
+
+                <View style={styles.webCardHeader}>
+                  <Text style={styles.webCardIcon}>
+                    {getCategoryIcon(store.category)}
+                  </Text>
+
+                  <View style={styles.webCardMeta}>
+                    <Text style={styles.webCardName} numberOfLines={2}>
+                      {store.name}
+                    </Text>
+                    <Text style={styles.webCardCategory}>
+                      {store.category.replace(/_/g, ' ')}
+                    </Text>
+                  </View>
+
+                  {store.distanceKm !== null ? (
+                    <Text style={styles.webCardDistance}>
+                      {formatDistance(store.distanceKm)}
+                    </Text>
+                  ) : null}
+                </View>
+
+                {store.address ? (
+                  <Text style={styles.webCardAddress} numberOfLines={2}>
+                    📍 {store.address}
+                  </Text>
+                ) : null}
+
+                {store.openingHours ? (
+                  <Text style={styles.webCardHours} numberOfLines={2}>
+                    🕐 {store.openingHours}
+                  </Text>
+                ) : null}
+
+                <View style={styles.webCardActions}>
+                  <TouchableOpacity
+                    style={styles.calloutBtn}
+                    onPress={() => navigation.navigate('StoreDetail', { store })}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.calloutBtnPrimary}>View Details</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.calloutBtn, styles.calloutBtnSecondary]}
+                    onPress={() => openDirections(store)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.calloutBtnSecondaryText}>Directions</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          })}
+
+          {stores.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateTitle}>No stores found</Text>
+              <Text style={styles.emptyStateText}>
+                Try a different category or search area.
+              </Text>
+            </View>
+          ) : null}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Native map (Android / iOS only)
+  // -------------------------------------------------------------------------
+  const Maps = require('react-native-maps');
+  const MapView = Maps.default;
+  const Marker = Maps.Marker;
+  const Circle = Maps.Circle;
+  const PROVIDER_DEFAULT = Maps.PROVIDER_DEFAULT;
 
   return (
     <View style={styles.container}>
-      {/* ── Map ── */}
       <MapView
         ref={mapRef}
-        // PROVIDER_DEFAULT uses Apple Maps on iOS (no key needed).
-        // On Android the map tiles may need a Google Maps API key for full rendering.
         provider={PROVIDER_DEFAULT}
         style={styles.map}
         initialRegion={{
@@ -118,7 +288,6 @@ export default function MapScreen() {
         showsCompass
         rotateEnabled={false}
       >
-        {/* 2 km search radius ring */}
         <Circle
           center={{ latitude: userLat, longitude: userLon }}
           radius={2000}
@@ -127,8 +296,7 @@ export default function MapScreen() {
           strokeWidth={1.5}
         />
 
-        {/* Store markers */}
-        {stores.map((store) => (
+        {stores.map((store: Store) => (
           <Marker
             key={store.id}
             coordinate={{ latitude: store.lat, longitude: store.lon }}
@@ -138,19 +306,16 @@ export default function MapScreen() {
         ))}
       </MapView>
 
-      {/* ── Store count badge ── */}
-      <View style={styles.badge} pointerEvents="none">
+      <View style={styles.badgeNative} pointerEvents="none">
         <Text style={styles.badgeText}>
           {stores.length} store{stores.length !== 1 ? 's' : ''} within 2 km
         </Text>
       </View>
 
-      {/* ── Re-center button ── */}
       <TouchableOpacity style={styles.recenterBtn} onPress={recenter} activeOpacity={0.85}>
         <Text style={styles.recenterIcon}>⊙</Text>
       </TouchableOpacity>
 
-      {/* ── Store callout modal ── */}
       {selected && (
         <Modal
           transparent
@@ -160,7 +325,6 @@ export default function MapScreen() {
         >
           <Pressable style={styles.modalBackdrop} onPress={() => setSelected(null)}>
             <Pressable style={styles.callout} onPress={() => {}}>
-              {/* Header */}
               <View style={styles.calloutHeader}>
                 <Text style={styles.calloutIcon}>
                   {getCategoryIcon(selected.category)}
@@ -180,21 +344,18 @@ export default function MapScreen() {
                 )}
               </View>
 
-              {/* Address */}
               {selected.address ? (
                 <Text style={styles.calloutAddress} numberOfLines={2}>
                   📍 {selected.address}
                 </Text>
               ) : null}
 
-              {/* Hours */}
               {selected.openingHours ? (
                 <Text style={styles.calloutHours} numberOfLines={2}>
                   🕐 {selected.openingHours}
                 </Text>
               ) : null}
 
-              {/* Action buttons */}
               <View style={styles.calloutActions}>
                 <TouchableOpacity
                   style={styles.calloutBtn}
@@ -206,6 +367,7 @@ export default function MapScreen() {
                 >
                   <Text style={styles.calloutBtnPrimary}>View Details</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   style={[styles.calloutBtn, styles.calloutBtnSecondary]}
                   onPress={() => openDirections(selected)}
@@ -234,8 +396,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // Badge
   badge: {
+    backgroundColor: 'rgba(10,10,10,0.88)',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#C9A84C',
+    zIndex: 2,
+  },
+  badgeNative: {
     position: 'absolute',
     top: 14,
     alignSelf: 'center',
@@ -245,6 +415,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: '#C9A84C',
+    zIndex: 2,
+  },
+  webBadgeWrap: {
+    marginTop: 14,
+    alignItems: 'center',
   },
   badgeText: {
     color: '#C9A84C',
@@ -252,7 +427,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Recenter button
   recenterBtn: {
     position: 'absolute',
     bottom: 44,
@@ -276,7 +450,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
 
-  // Modal callout
   modalBackdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -359,5 +532,133 @@ const styles = StyleSheet.create({
     color: '#C9A84C',
     fontWeight: '600',
     fontSize: 14,
+  },
+
+  webHeader: {
+    paddingTop: 28,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+  },
+  webTitle: {
+    color: '#ffffff',
+    fontSize: 28,
+    fontWeight: '700',
+    letterSpacing: -0.5,
+  },
+  webSubtitle: {
+    color: '#888',
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 6,
+  },
+  webMapsBtn: {
+    marginTop: 16,
+    marginHorizontal: 20,
+    backgroundColor: '#C9A84C',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    alignItems: 'center',
+  },
+  webMapsBtnText: {
+    color: '#0a0a0a',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  webListContent: {
+    padding: 20,
+    paddingTop: 18,
+    paddingBottom: 40,
+  },
+  webCard: {
+    backgroundColor: '#111111',
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: '#222',
+    overflow: 'hidden',
+  },
+  webCardImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: 14,
+    marginBottom: 14,
+    backgroundColor: '#1a1a1a',
+  },
+  webCardImageFallback: {
+    width: '100%',
+    height: 180,
+    borderRadius: 14,
+    marginBottom: 14,
+    backgroundColor: '#171717',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#222',
+  },
+  webCardImageFallbackIcon: {
+    fontSize: 42,
+  },
+  webCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  webCardIcon: {
+    fontSize: 26,
+    marginRight: 12,
+  },
+  webCardMeta: {
+    flex: 1,
+  },
+  webCardName: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  webCardCategory: {
+    color: '#666',
+    fontSize: 13,
+    textTransform: 'capitalize',
+    marginTop: 2,
+  },
+  webCardDistance: {
+    color: '#C9A84C',
+    fontSize: 13,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  webCardAddress: {
+    color: '#888',
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 6,
+  },
+  webCardHours: {
+    color: '#888',
+    fontSize: 13,
+    lineHeight: 19,
+    marginBottom: 6,
+  },
+  webCardActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  emptyState: {
+    paddingVertical: 36,
+    alignItems: 'center',
+  },
+  emptyStateTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  emptyStateText: {
+    color: '#777',
+    fontSize: 14,
+    marginTop: 6,
+    textAlign: 'center',
   },
 });
